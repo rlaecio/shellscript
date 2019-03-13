@@ -1,4 +1,4 @@
-!/bin/bash
+#!/bin/bash
 
 # Definindo parametros do MySQL
 # - open file from list databases
