@@ -3,7 +3,10 @@
 # Definindo parametros do MySQL
 # - open file from list databases
 
-dbarray=( $( cat /root/parameter/databases.txt ) )
+echo "             Backup iniciado em: `date +%Y-%m-%d_%H:%M:%S`"
+echo "-----------------------------------------------------------------------------"
+
+dbarray=( $( cat /backup/parameter/databases.txt ) )
 
 echo "  -- Definindo parametros do MySQL ..."
 DB_NAME=''
@@ -19,7 +22,7 @@ DATE=`date +%Y-%m-%d`
 
 for DB_NAME in "${dbarray[@]}"
 do
-    echo "$DB_NAME"
+    echo "--> $DB_NAME ...."
     BACKUP_NAME=$DB_NAME-$DATE.sql
     BACKUP_TAR=$DB_NAME-$DATE.tar
 
@@ -29,17 +32,30 @@ do
 
     # Compactando arquivo em tar
     echo "  -- Compactando arquivo em tar ..."
-    tar -cjf $BACKUP_DIR/$BACKUP_TAR -C $BACKUP_DIR $BACKUP_NAME --remove-files
+    tar -cvf  $BACKUP_DIR/$BACKUP_TAR -C $BACKUP_DIR $BACKUP_NAME
 
 
+    # Excluindo arquivos desnecessarios
+    echo "  -- Excluindo arquivos desnecessarios ..."
+    rm -rf $BACKUP_DIR/$BACKUP_NAME
 
+    echo ""
 done
+
 echo "Backup do MySQL executado"
 
 # Backup da tabela de usuarios e permições
 $MYSQLDUMP --user=$DB_USER --database mysql --tables db user > $BACKUP_DIR/bkp_users-$DATE.sql
+tar -cvf  $BACKUP_DIR/bkp_users-$DATE.tar -C $BACKUP_DIR bkp_users-$DATE.sql
+rm -rf $BACKUP_DIR/bkp_users-$DATE.sql
 
 # Excluindo backups antigos
 echo " -- Excluindo backups com mais de 30 dias ..."
 find $BACKUP_DIR/* -mtime +30 -delete
+
+
+echo "             Backup terminado em: `date +%Y-%m-%d_%H:%M:%S`"
+echo "-----------------------------------------------------------------------------"
+
+
 
