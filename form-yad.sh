@@ -1,6 +1,6 @@
 #/bin/bash
 #Exemplo yad
-Saida=$(zenity --forms --imag blog-min.png --image-on-top \ 
+Saida=$(yad --forms --imag blog-min.png --image-on-top \ 
     --title "Terminal Root" \
     --text "Exemplo <b>YAD</b> por <big><b>Terminal Roo</b></big>" \
     --field Nome 'Marcos' \
